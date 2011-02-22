@@ -30,7 +30,7 @@ xml.feed(xmlns:"http://www.w3.org/2005/Atom") {
     i.releases.each { r ->
       entry {
         title("${r.title} ${r.version}")
-        link(href:r.wiki)
+        link(href:r.wiki,rel:"alternate",type:"text/html")
         id("urn:63067410335c11e0bc8e0800200c9a66:${r.gav}")
         pubished(xsd(new Date(r.timestamp)))
         updated(xsd(new Date(r.timestamp)))

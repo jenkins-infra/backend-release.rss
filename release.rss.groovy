@@ -17,6 +17,20 @@ def df=new SimpleDateFormat("MMM dd, yyyy");
 
 def json = new JsonSlurper().parse(new URL(args[0]));
 
+def toGA(gav) {
+    return gav.substring(0,gav.lastIndexOf(':'))
+}
+
+def first = [:]; // GA -> GAV to indicate the first version of the release
+json.releaseHistory.reverse().each { i ->
+  i.releases.each { r ->
+    gav = r.gav
+    if (gav) {
+      first[toGA(gav)] = gav
+    }
+  }
+}
+
 def xml = new MarkupBuilder(new OutputStreamWriter(System.out))
 xml.feed(xmlns:"http://www.w3.org/2005/Atom") {
   title("Jenkins plugin releases")
@@ -29,7 +43,8 @@ xml.feed(xmlns:"http://www.w3.org/2005/Atom") {
   json.releaseHistory.reverse().subList(0,30).each { i ->
     i.releases.each { r ->
       entry {
-        title("${r.title} ${r.version}")
+        s = (first[toGA(r.gav)] == r.gav) ? " (new)" : ""
+        title("${r.title} ${r.version}${s}")
         link(href:r.wiki,rel:"alternate",type:"text/html")
         id("urn:63067410335c11e0bc8e0800200c9a66:${r.gav}")
         pubished(xsd(new Date(r.timestamp)))

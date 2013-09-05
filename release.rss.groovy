@@ -42,14 +42,16 @@ xml.feed(xmlns:"http://www.w3.org/2005/Atom") {
 
   json.releaseHistory.reverse().subList(0,30).each { i ->
     i.releases.each { r ->
-      entry {
-        s = (first[toGA(r.gav)] == r.gav) ? " (new)" : ""
-        title("${r.title} ${r.version}${s}")
-        link(href:r.wiki,rel:"alternate",type:"text/html")
-        id("urn:63067410335c11e0bc8e0800200c9a66:${r.gav}")
-        pubished(xsd(new Date(r.timestamp)))
-        updated(xsd(new Date(r.timestamp)))
-        summary("${r.title} ${r.version}")
+      if (r.gav) {
+        entry {
+          s = (first[toGA(r.gav)] == r.gav) ? " (new)" : ""
+          title("${r.title} ${r.version}${s}")
+          link(href:r.wiki,rel:"alternate",type:"text/html")
+          id("urn:63067410335c11e0bc8e0800200c9a66:${r.gav}")
+          pubished(xsd(new Date(r.timestamp)))
+          updated(xsd(new Date(r.timestamp)))
+          summary("${r.title} ${r.version}")
+        }
       }
     }
   }
